@@ -46,16 +46,29 @@ object Roman extends App {
     )
 
     val converterMatrix = Map(
-      (0 -> ("", "", "", "")),
-      (1 -> ("M", "C", "X", "I")),
-      (2 -> ("MM", "CC", "XX", "II")),
-      (3 -> ("MM", "CCC", "XXX", "III")),
-      (4 -> ("", "CD", "XL", "IV")),
-      (5 -> ("", "D", "L", "V")),
-      (6 -> ("", "DC", "LX", "VI")),
-      (7 -> ("", "DCC", "LXX", "VII")),
-      (8 -> ("", "DCCC", "LXXX", "VIII")),
-      (9 -> ("", "CM", "XC", "IX")),
+      (0 -> Array("", "", "", "")),
+      (1 -> Array("M", "C", "X", "I")),
+      (2 -> Array("MM", "CC", "XX", "II")),
+      (3 -> Array("MM", "CCC", "XXX", "III")),
+      (4 -> Array("", "CD", "XL", "IV")),
+      (5 -> Array("", "D", "L", "V")),
+      (6 -> Array("", "DC", "LX", "VI")),
+      (7 -> Array("", "DCC", "LXX", "VII")),
+      (8 -> Array("", "DCCC", "LXXX", "VIII")),
+      (9 -> Array("", "CM", "XC", "IX"))
+    )
+
+    val matrix = Array(
+      Array("", "", "", ""),
+      Array("M", "C", "X", "I"),
+      Array("MM", "CC", "XX", "II"),
+      Array("MM", "CCC", "XXX", "III"),
+      Array("", "CD", "XL", "IV"),
+      Array("", "D", "L", "V"),
+      Array("", "DC", "LX", "VI"),
+      Array("", "DCC", "LXX", "VII"),
+      Array("", "DCCC", "LXXX", "VIII"),
+      Array("", "CM", "XC", "IX")
     )
 
     @tailrec
@@ -100,6 +113,15 @@ object Roman extends App {
 
 //    composeRomanNumber(arabic)
 
+    def convertUsingMatrix(row: Int, col: Int): String = matrix(row)(col)
+
+    if (arabic <= 0 || arabic >= 3999) throw new IllegalArgumentException(s"Invalid: $arabic")
+
+    val arabicStrLeftPadded = f"$arabic%04d"
+    arabicStrLeftPadded.zipWithIndex.map { t =>
+      val (n, i) = t
+      convertUsingMatrix(n.asDigit, i)
+    }.mkString
 
   }
 }
