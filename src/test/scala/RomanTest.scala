@@ -54,6 +54,7 @@ class RomanTest extends AnyFlatSpec with Matchers {
       case (input, expected) =>
         encode(input) shouldBe expected
     }
+
   }
 
 }
