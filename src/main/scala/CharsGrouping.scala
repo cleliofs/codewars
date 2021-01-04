@@ -1,4 +1,5 @@
 import scala.collection.immutable.Seq
+import scala.collection.mutable
 
 object CharsGrouping extends App {
 
@@ -7,20 +8,22 @@ object CharsGrouping extends App {
       m.map( t => s"${if (t._2 > 1) t._2 else ""}${t._1}")
     }.mkString
 
-    val groupedCharsMap = s.tail.foldLeft[(Map[Int, (Char, Int)], Char, Int)]((Map(0 -> (s.head, 1)), s.head, 0)) { (counter, c) =>
-      val (currentMap, currentChar, currentPosition) = counter
+    val groupedCharsSeq = s.tail.foldLeft[(mutable.Seq[(Char, Int)], Char, Int)]((mutable.Seq((s.head, 1)), s.head, 0)) { (counter, c) =>
+      val (currentSeq, currentChar, currentPosition) = counter
       if (c == currentChar) {
-        (currentMap + (currentPosition -> (c, currentMap(currentPosition)._2 + 1)), c, currentPosition)
+        currentSeq.update(currentPosition, (currentSeq(currentPosition)._1, currentSeq(currentPosition)._2 + 1))
+        (currentSeq, c, currentPosition)
       } else {
         val newPosition = currentPosition+1
-        (currentMap + (newPosition -> (c, 1)), c, newPosition)
+        (currentSeq ++ Seq((c, 1)), c, newPosition)
       }
     }
-    mkStringResults(groupedCharsMap._1.toSeq.sortBy(_._1).map(_._2))
+
+    mkStringResults(groupedCharsSeq._1.toSeq)
   }
 
 
-  // "aabbbaaaabba" => 2a3b4a2ba => Map(0 ->('a', 2), 1->('b', 3), 2->('a', 4), 3->('b', 2), 4->('a', 1))
+  // "aabbbaaaabba" => 2a3b4a2ba => List(('a', 2), ('b', 3), ('a', 4), ('b', 2), ('a', 1))
 
   // (Map(0 -> ('a', 1)), 'a', 0) and 'a' => (Map(0 -> ('a', 2)), 'a', 0) and 'a'
   // (Map(0 -> ('a', 2)), 'a', 0) and 'b' => (Map(0 -> ('a', 2), 1 -> ('b', 1)), 'b', 1) and 'b'
